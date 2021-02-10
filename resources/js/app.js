@@ -7,7 +7,6 @@
 import Vue from "vue";
 import Vuex from 'vuex'
 import axios from 'axios'
-
 Vue.use(Vuex)
 
 import Buefy from 'buefy';
@@ -23,10 +22,11 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
 import App from './views/App'
-import Home from './views/Home'
 import Login from './views/auth/Login'
 import Register from './views/auth/Register'
 import ServicesPage from './views/services/ServicesPage'
+import Dashboard from "./views/dashboard/Dashboard";
+import DashboardHome from './views/dashboard/home/Index'
 
 Vue.prototype.$http = axios
 Vue.prototype.$http.defaults.baseURL = '/api/'
@@ -70,14 +70,13 @@ const  store = new Vuex.Store({
     }
 })
 
-
 const router = new VueRouter({
     mode: 'history',
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: Home
+            name: 'login_redirect',
+            component: Login
         },
         {
             path: '/login',
@@ -90,9 +89,26 @@ const router = new VueRouter({
             component: Register,
         },
         {
-            path: '/services/',
-            name: 'services',
-            component: ServicesPage,
+            path: '/dashboard',
+            name: 'dashboard',
+            component: Dashboard,
+            children: [
+                {
+                    path: '',
+                    name: 'dashboardHome',
+                    component: DashboardHome
+                },
+                {
+                    path: 'services',
+                    name: 'services',
+                    component: ServicesPage
+                },
+                // {
+                //     path: 'purchases',
+                //     name: 'purchases',
+                //     component: PurchasesPage
+                // }
+            ]
         },
     ],
 });
@@ -100,11 +116,10 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     const loggedIn = localStorage.getItem('user')
 
-    if (to.matched.some(record => record.meta.auth) && !loggedIn) {
-        next('/login')
-        return
-    }
-    next()
+    if (to.matched.some(record => record.meta.auth) && !loggedIn)
+            next('/login')
+    else
+        next()
 });
 
 /**
@@ -127,7 +142,7 @@ router.beforeEach((to, from, next) => {
  */
 
 const app = new Vue({
-    store: store,
+    store,
     components : {
         App
     },
