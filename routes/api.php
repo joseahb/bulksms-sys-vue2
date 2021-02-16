@@ -27,6 +27,7 @@ Route::middleware('auth:api')->group(function(){
     Route::apiResource('transactions', API\TransactionController::class);
     Route::apiResource('payments', API\PaymentController::class);
     Route::apiResource('purchases', API\PurchaseController::class);
+    Route::apiResource('users', API\UserController::class);
 }
 );
 
