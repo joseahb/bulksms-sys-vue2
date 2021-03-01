@@ -13,7 +13,10 @@ class AuthController extends Controller
      public function register(Request $request)
         {
             $validatedData = $request->validate([
-                'name' => 'required|max:55',
+                'username' => 'required|unique:users|max:55',
+                'first_name' => 'required|max:55',
+                'last_name' => 'required|max:55',
+                'mobile' => 'required|unique:users',
                 'email' => 'email|required|unique:users',
                 'password' => 'required|confirmed'
             ]);
@@ -29,11 +32,15 @@ class AuthController extends Controller
 
         public function login(Request $request)
         {
-            $loginData = $request->validate([
-                'email' => 'email|required',
+            $input = $request->validate([
+                'userId' => 'required',
                 'password' => 'required'
             ]);
 
+            $fieldType = filter_var($input['userId'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+            
+            $loginData = array($fieldType => $input['userId'], 'password' => $input['password']);
+            
             if (!auth()->attempt($loginData)) {
                 return response(['message' => 'This User does not exist, check your details'], 400);
             }

@@ -13,4 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('{any}', "FrontendController@index")->where('any', ".*");
+// Route::get('{any}', "FrontendController@index")->where('any', ".*");
+Route::get('test', function(){
+    echo phpinfo();
+});

@@ -39,7 +39,7 @@ class WalletController extends Controller
         }
         $wallet = Wallet::create($data);
 
-        return response('wallet' => new WalletsResource($wallet), 'message' => 'wallet created successfully';
+        return response(['wallet' => new WalletsResource($wallet), 'message' => 'wallet created successfully']);
     }
 
     /**
